@@ -1,0 +1,11 @@
+{
+  "name": "Farmer Rain Heat Map",
+  "version": "1.0.0",
+  "description": "Diplays rain fall heat map within north western region of inda.",
+  "main": "farmRainMapApp.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "James Laney @CMU",
+  "license": "ISC"
+}
