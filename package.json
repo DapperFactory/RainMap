@@ -1,11 +1,22 @@
 {
-  "name": "Farmer Rain Heat Map",
+  "name": "expressFarmer",
   "version": "1.0.0",
-  "description": "Diplays rain fall heat map within north western region of inda.",
+  "description": "Displays Crowd Sourced Rain Data ",
   "main": "farmRainMapApp.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "James Laney @CMU",
-  "license": "ISC"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DapperFactory/RainMap.git"
+  },
+  "keywords": [
+    "RainMap"
+  ],
+  "author": "James Laney",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DapperFactory/RainMap/issues"
+  },
+  "homepage": "https://github.com/DapperFactory/RainMap"
 }
