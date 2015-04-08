@@ -1,0 +1,19 @@
+{
+  "name": "expressRainMap",
+  "version": "1.0.0",
+  "description": "West India rain map and water level data",
+  "main": "farmRainMapApp.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DapperFactory/RainMap.git"
+  },
+  "author": "James Laney",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DapperFactory/RainMap/issues"
+  },
+  "homepage": "https://github.com/DapperFactory/RainMap"
+}
