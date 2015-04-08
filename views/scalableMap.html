@@ -116,25 +116,38 @@
         return totalPixelSize;
          
       }
-
+      //var centerMap = new google.map.LatLng(24.57083333,74.22083333);
       function initialize() {
           var mapOptions = {
               zoom: 10,
-              center: new google.maps.LatLng(23.375481, 72.152067),
+              center: new google.maps.LatLng(24.57083333, 74.22083333),
+              //center: centerMap;
               mapTypeId: google.maps.MapTypeId.SATELLITE
           };
-
+          //Google Mab opject
           map = new google.maps.Map(document.getElementById('map_canvas'),
           mapOptions);
 
+          //Build Heat Mab from lat long data map objects
           pointArray = new google.maps.MVCArray(data);
-
+          //builds the Heat Map Layer
           heatmap = new google.maps.visualization.HeatmapLayer({
-              data: pointArray,
-			  radius: getNewRadius()
+                data: pointArray,
+                radius: getNewRadius()
           });
-
+          //renders HeatMap on to map
           heatmap.setMap(map);
+
+          //
+          wellLayer = new google.maps.FusionTableLayers({
+            query:{
+              select: '',
+              from : '1YW8dSX7PkCpn3okPWFySalL9XgrymC0v9lBkB5be'
+            }
+          });
+          wellLayer.setMap(map);
+
+          
 		  
           google.maps.event.addListener(map, 'zoom_changed', function () {
               heatmap.setOptions({radius:getNewRadius()});
