@@ -6,13 +6,13 @@
      <script src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=visualization,geometry"></script>
 
     <!--Coppied from fusioun layer table-->
-    <!--
     <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=ftOnLoadClientApi">
     </script>
-     --> 
+
    
    <script>
-		  var map, pointarray, heatmap;
+
+      var map, pointarray, heatmap;
       var TILE_SIZE = 256;
 
       //Mercator --BEGIN--
@@ -86,6 +86,8 @@
           new google.maps.LatLng(23.364648, 72.164466),
           new google.maps.LatLng(23.364648, 72.164466),
           new google.maps.LatLng(23.364648, 72.164466),  
+
+
           new google.maps.LatLng(23.324648, 72.134466),
           new google.maps.LatLng(23.394648, 72.124466),
           new google.maps.LatLng(23.424648, 72.114466),
@@ -133,10 +135,14 @@
           mapOptions);
 
           //Build Heat Mab from lat long data map objects
-          
-      });
-      //renders HeatMap on to map
-      heatmap.setMap(map);
+          pointArray = new google.maps.MVCArray(data);
+          //builds the Heat Map Layer
+          heatmap = new google.maps.visualization.HeatmapLayer({
+                data: pointArray,
+                radius: getNewRadius()
+          });
+          //renders HeatMap on to map
+          heatmap.setMap(map);
 
 
           //currently not working and not able to scale dynamically 
