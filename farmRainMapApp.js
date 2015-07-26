@@ -17,6 +17,8 @@ var wells = [];
 loadWells(wells);
 
 app.set('views', __dirname + '/views');
+app.use(express.static( __dirname + '/resources'));
+
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 

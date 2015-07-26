@@ -4,39 +4,267 @@
   	<meta charset="utf-8">
   	<style>
 	  #map-canvas {
-	    width: 600px;
+	    width: 602px;
 	    height: 500px;
 	    background-color: #CCC;
 	  }
+    
+
+  #LegendGradient {
+    width: 100%;
+    height: 20px;
+    border: 0px solid black;
+
+  }
+
+  #LegendKey {
+   
+    width: 600px;
+    height: 40px;
+    
+    border: 1px solid black;
+  }
+  .scale {
+    position: absolute;
+    display: inline;
+    
+  }
 	</style>
 	<!--Load Google Maps API-->
-	<script src="https://maps.googleapis.com/maps/api/js"></script>
+	<!--
+  <script src="https://maps.googleapis.com/maps/api/js"></script>
+-->
+  <script src="https://maps.googleapis.com/maps/api/js?libraries=visualization&sensor=true_or_false"></script>
+  
+  <!--Load GeoJSON library-->
+  <script type='text/javascript' src='/geojson.min.js'></script>
+
 	<!-- Initializes and loads map in window-->
-	<!--All functions fro manipulating the map belong in here-->
-  	<script>
-  		//First function called when pages loads
-  	 
+	<!--All functions for manipulating the map belong in here-->
+    </div>
+  	<script type='text/javascript'>
+      //getting data
+      var wellGeoJson = <%-JSON.stringify(well_data)%>;
+     
+      wellGeoJson = GeoJSON.parse(wellGeoJson, {Point: ['lat', 'lng']});
+      
+
       var map, heatmap;
   		function initialize() {
  			  var mapCanvas = document.getElementById('map-canvas');
-    	
+        //Blank infowindow place holder
+        var infoWindow = new google.maps.InfoWindow({
+          content: ""
+        });
         var mapOptions = {
 			    center: new google.maps.LatLng(24.57138, 74.21638),
-			    zoom: 8,
+			    zoom: 15,
 			    mapTypeId: google.maps.MapTypeId.HYBRID
 			   }
     		//Global map element 
     		map = new google.maps.Map(mapCanvas, mapOptions);
-        map.data.loadGeoJson('localhost:8888');
-  			
+        
+        map.data.addGeoJson(wellGeoJson);
+        //Create Info window pop up to dispaly Well Id and water level
+        //Might want to change this to onClick -- mouseover get annoying
+        map.data.addListener('mouseover', function(event) {
+          infoWindow.setContent('<div style="line-height:1.35;overflow:hidden;white-space:nowrap;"> Well ID = '+
+                      event.feature.getProperty('Id') +"<br/>Water Level: " + event.feature.getProperty("Level")  + "m");
+                      //<br/> LatLng: " + event.latLng +" </div>"); //add this back to to include latlong in infopopup window 
+          var anchor = new google.maps.MVCObject();
+          anchor.set("position",event.latLng);
+          infoWindow.open(map,anchor);
+          
+        });
+
+
+        var heatMapData = []; //Container for heatmap data points
+        var coords = []       //
+        var maxWeight = 0;    //Max weight value for heatmap legend
+        //Get maxWeight and populate heatMapdata
+        for(var well in wellGeoJson.features){
+            //console.log(wellGeoJson.features[well].geometry.coordinates[0]);
+            //{location: new google.maps.LatLng(37.782, -122.441), weight: 3} 
+            // var latitude = Number(wellGeoJson.features[well].geometry.coordinates[0] );
+            // var longitude = Number(wellGeoJson.features[well].geometry.coordinates[1] );
+            // console.log(latitude+  " , " + longitude);
+            // var pnt = new google.maps.LatLng(latitude, 
+            //                                  longitude);
+            // coords.push(pnt);
+          if (wellGeoJson.features[well].properties.Level > maxWeight){
+             maxWeight = wellGeoJson.features[well].properties.Level;
+           }
+
+          var point = {
+                location: new google.maps.LatLng(
+                    Number(wellGeoJson.features[well].geometry.coordinates[1]),
+                    Number(wellGeoJson.features[well].geometry.coordinates[0])),
+                weight: wellGeoJson.features[well].properties.Level };
+          heatMapData.push(point);
+
+        }
+        // alert("MaxWeight: "  + maxWeight);
+        // var heatMapData = function(wellGeoJson){
+            
+        //     return new google.maps.LatLng(wellGeoJson.geometry.coordinates[0], c.geometry.coordinates[1], c.properties.Level)
+        // });
+        //loop through GeoJson and build heatmap data
+        // console.log(heatMapData);
+        
+
+        //Create heapmap layer
+        heatmap = new google.maps.visualization.HeatmapLayer({
+           data: new google.maps.MVCArray(heatMapData),
+           radius: 40
+        }); 
+        //Build out Legend
+        var gradient = [
+            'rgba(0, 255, 255, 0)',
+            'rgba(0, 255, 255, 1)',
+            'rgba(0, 191, 255, 1)',
+            'rgba(0, 127, 255, 1)',
+            'rgba(0, 63, 255, 1)',
+            'rgba(0, 0, 255, 1)',
+            'rgba(0, 0, 223, 1)',
+            'rgba(0, 0, 191, 1)',
+            'rgba(0, 0, 159, 1)',
+            'rgba(0, 0, 127, 1)',
+            'rgba(63, 0, 91, 1)',
+            'rgba(127, 0, 63, 1)',
+            'rgba(191, 0, 31, 1)',
+            'rgba(255, 0, 0, 1)']
+
+        heatmap.set('gradient',gradient);
+        heatmap.setMap(map);
+        
+        var gradientCss = '(left';
+        for (var i = 0 ; i < gradient.length; ++i){
+          gradientCss += ', ' + gradient[i];
+        }
+  			gradientCss += ')';
+        
+        document.getElementById('LegendGradient').style.background = '-webkit-linear-gradient' + gradientCss;
+        document.getElementById('LegendGradient').style.background =  '-moz-linear-gradient' + gradientCss;
+        document.getElementById('LegendGradient').style.background =  '-o-linear-gradient' + gradientCss;
+        document.getElementById('LegendGradient').style.background =  'linear-gradient' + gradientCss;
+
+        drawLegend(maxWeight);
+        //Legend
   		}
   		
-  		//Called when page is request to load
-  		google.maps.event.addDomListener(window, 'load', initialize);
+
+  	//Called when page is requested to load
+  	google.maps.event.addDomListener(window, 'load', initialize);
+
+    //event listener to populate Ledend once map loads
+    //google.maps.event.addListenerOnce(map, 'tilesloaded', drawLegend());
+    
+    
+    function drawLegend(maxIntensity) {
+      //var maxIntensity = heatmap['gm_bindings_']['maxIntensity'][484]['Sc']['j'];
+      var legendWidth = document.getElementById('LegendGradient').style.width = '600px';
+      var offset = Math.round(maxIntensity/6);
+      console.log("MaxIntesity: " + maxIntensity +", offset:" + offset  );
+      var value = maxIntensity;
+      var key = 6;
+      //build legend key scale
+      for ( key ; key > 0; key--) {
+          //var offset = i * legendWidth / maxIntensity;
+          //Add Value to key
+          var t_value = document.createTextNode(Math.round(value));
+          document.getElementById(key).appendChild(t_value);
+          //decrement value
+          value = value - offset;
+          
+
+          // if (i > 0 && i < maxIntensity) {
+          //     offset -= 0.5;
+          // } else if (i == maxIntensity) {
+          //     offset -= 1;
+          // }
+      }
+          //Creat Ledgen Key
+
+          // document.getElementById('LegendGradient').appendChild(x);
+          //still working getting numbers to show below the color gradient
+   // var div = document.createElement("div" );
+   // var style = document.createTextNode('STYLE');
+   // var style_t = document.createTextNode("{color:red;}");
+   // style.appendChild(style_t);
+
+   // var text =  document.createTextNode(i + "m ");
+   // div.appendChild(style);
+           
+          //document.getElementById("LegendKey").appendChild(div);
+          //   "#legendGradient, { 
+          // //     'position': 'absolute',
+          // //     'left': offset + 'px',
+          // //     'top': '15px',
+          // //     'width': '1px',
+          // //     'height': '3px',
+          // //     'background': 'black'}");
+          // x.appendChild(t);
+          // document.getElementById('LegendGradient').appendChild(x);
+
+
+          // document.getElementById('LegendKey').append(('<div>').css({
+          //     'position': 'absolute',
+          //     'left': (offset - 5) + 'px',
+          //     'top': '18px',
+          //     'width': '10px',
+          //     'text-align': 'center'
+          // }).html(i));
+      
+      }
+
+    function toggleHeatmap() {
+      heatmap.setMap(heatmap.getMap() ? null : map);
+    }
+    //toggles radius of heatmap - this needs some tunning for well applications, what is the effective radius ?
+    function changeRadius() {
+      heatmap.set('radius', heatmap.get('radius') ? null : 20);
+    }
+    //changes the color of the heat map
+    function changeGradient() {
+      var gradient = [
+        'rgba(0, 255, 255, 0)',
+        'rgba(0, 255, 255, 1)',
+        'rgba(0, 191, 255, 1)',
+        'rgba(0, 127, 255, 1)',
+        'rgba(0, 63, 255, 1)',
+        'rgba(0, 0, 255, 1)',
+        'rgba(0, 0, 223, 1)',
+        'rgba(0, 0, 191, 1)',
+        'rgba(0, 0, 159, 1)',
+        'rgba(0, 0, 127, 1)',
+        'rgba(63, 0, 91, 1)',
+        'rgba(127, 0, 63, 1)',
+        'rgba(191, 0, 31, 1)',
+        'rgba(255, 0, 0, 1)'
+      ]
+      heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
+    }
 
 	</script>
   </head>
   <body>
+    <div id="panel">
+      <button onclick="toggleHeatmap()">Toggle Heatmap</button>
+      <button onclick="changeGradient()">Change gradient</button>
+      <button onclick="changeRadius()">Change radius</button>
+      <button onclick="changeOpacity()">Change opacity</button>
+    </div>
   	<div id = "map-canvas"></div>
+   
+    <div id="LegendKey"> 
+      <div id="LegendGradient"></div>
+      <div class="scale" id="0">O meters</div>
+      <div class="scale" id="1" style="left: 100px;"></div>
+      <div class="scale" id="2" style="left: 200px;"></div>
+      <div class="scale" id="3" style="left: 300px;"></div>
+      <div class="scale" id="4" style="left: 400px;"></div>
+      <div class="scale" id="5" style="left: 500px;"></div>
+      <div class="scale" id="6" style="left: 600px;"></div>
+    </div>
   </body>
 </html>
