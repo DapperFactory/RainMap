@@ -47,7 +47,7 @@ app.get('/scalable', function(req, res){
 //pass empty list to get filled by the query 
 function loadWells(wells){
 		//TODO: Change query to inner join that  includes well level 
-		var sqlQuery = "SELECT * FROM Well_Locations NATURAL JOIN Well_Levels WHERE ID LIKE 'V%' "
+		var sqlQuery = "SELECT * FROM Well_Locations NATURAL JOIN Well_Levels"
 		db.each(sqlQuery, function(err, row) {
 			//console.log(row);
 			if(err) console.log(err);
