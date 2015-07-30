@@ -29,3 +29,14 @@ Tune visual features on map.
 Is the radius to large? should it remain the same size when zooming?
 Mouseover launch info window popup to mouseclick ?
 Change icon colors of level is below a certain level?
+
+4)Modify Lat Long conversion to handle decimal in calculation in farmRainMapApp.js. The decimal is added to the conversiont at the sesconds level EX:
+Degree + Minutes/60 +  ('Seconds' + 'Decimal')/3600
+
+5) Modify Each WellID as followed:
+Badgoan -> Add 1, so well ID B 012 becomes B 112
+Dharta -> Add 2, so well ID D 031 becomes D 231
+Hinta -> Add 3, so well ID H 024 becomes H 324
+Sunderpura -> Add 4, so well ID S 019 becomes S 419
+Varni -> Add 5, so well ID V 024 becomes B 524
+ 
