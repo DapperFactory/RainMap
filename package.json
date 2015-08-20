@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/DapperFactory/RainMap",
   "dependencies": {
+    "body-parser": "^1.13.3",
     "express": "^4.12.3",
     "geojson": "^0.2.1",
     "google-maps": "^3.1.0",
