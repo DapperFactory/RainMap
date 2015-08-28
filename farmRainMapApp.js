@@ -72,9 +72,9 @@ function loadWells(wells){
 			//console.log(row);
 			if(err) console.log(err);
 			//console.log(myData);
-			var latitude = Number(row.LAT_DEGREE) + Number(row.LAT_MINUTE)/60 + Number(row.LAT_SECOND)/3600;
+			var latitude = Number(row.LAT_DEGREE) + Number(row.LAT_MINUTE)/60 + (Number(row.LAT_SECOND) + Number("." + row.LAT_DECIMAL))/3600;
 			//console.log("Latitude: " + latitude);
-			var longitude = Number(row.LNG_DEGREE) + Number(row.LNG_MINUTE)/60 + Number(row.LNG_SECOND)/3600;
+			var longitude = Number(row.LNG_DEGREE) + Number(row.LNG_MINUTE)/60 + (Number(row.LNG_SECOND) + Number("." + row.LNG_DECIMAL))/3600;
 			//console.log("longitude: " + longitude);
 			var well = {Id:row.ID, lat: latitude, lng: longitude, Elevation: row.ELEVATION_m, Level: row.TOT_WELL_DEPTH_m, TimeStamp: row.T_STAMP };
 			//add a well to the list
