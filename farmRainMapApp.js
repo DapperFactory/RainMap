@@ -2,6 +2,7 @@ var express = 	require('express');
 var fs 		= 	require('fs');
 var jsonfile = 	require('jsonfile');
 var geoJson = 	require('geojson');
+var bodyParser = require('body-parser');
 
 //Initialize Database connections
 var db_file = "RAINAPP.db";      		//pass in databse files
@@ -13,6 +14,8 @@ var db = new sqlite3.Database('RAINAPP.db');
 console.log('Connecting to Database');
 
 var app = express();
+app.use(bodyParser.json()); //support json encoded bodies
+app.use(bodyParser.urlencoded({extended: true }));//support encoded body
 var wells = [];
 loadWells(wells);
 
@@ -28,6 +31,7 @@ app.get('/testMap', function(req, res){
 	res.render('google-maps.html', {well_data: wells});
 });
 
+//JSON well dump
 app.get('/', function(req, res){
 	
 	res.json(wells);
@@ -41,6 +45,20 @@ app.get('/heatmap', function(req, res){
 app.get('/scalable', function(req, res){
 	
 	res.render('scalableMap.html', {well_data: wells});
+});
+
+//SMS DUMP APPEND TO FILE
+app.post('/api/smsdump', function(req, res){
+	//retrive POST DATA
+	//http://www.domain-name.com/keyword.php?mobile=9945xxxxxx&msg=UD9945xxxxxx
+	var number = req.body.mobile;
+	var msg = req.body.msg;
+	console.log(number + ":" + msg);
+	res.send("Number=" + number + " Message=" + msg);
+	fs.appendFile('smsDump.log', number + '::' + msg + '\r\n');
+	//Write and append data to a file
+	//this is just for safe keeping
+
 });
 
 
