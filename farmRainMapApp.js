@@ -1,8 +1,9 @@
-var express = 	require('express');
-var fs 		= 	require('fs');
-var jsonfile = 	require('jsonfile');
-var geoJson = 	require('geojson');
+var express    = require('express');
+var fs 		   = require('fs');
+var jsonfile   = require('jsonfile');
+var geoJson    = require('geojson');
 var bodyParser = require('body-parser');
+var lazy       = require('lazy');
 
 //Initialize Database connections
 var db_file = "RAINAPP.db";      		//pass in databse files
@@ -102,8 +103,6 @@ function saveWells(file, obj){
 		if(err) console.error(err);
 	});
 }
-
-
 
 // function parseLatLong(row){
 // 		//console.log(myData);
