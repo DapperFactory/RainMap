@@ -86,7 +86,7 @@ function loadWells(wells){
 			if(rows > 0){
 				console.log("Completed Query");
 				wells = geoJson.parse(wells, {Point: ['lat', 'lng']});
-				//saveWells('views/wellsGeoJson.json', wells);			
+				//saveWells('views/wellsGeoJson.json', wells); NOT NEEDED
 			}
 		}
 
