@@ -26,7 +26,7 @@ app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 
 
-app.get('/testMap', function(req, res){
+app.get('/Well_Levels', function(req, res){
 	
 	res.render('google-maps.html', {well_data: wells});
 });
@@ -55,6 +55,8 @@ app.post('/api/smsdump', function(req, res){
 	var msg = req.body.msg;
 	console.log(number + ":" + msg);
 	res.send("Number=" + number + " Message=" + msg);
+	//Parse msg format = SMA 313603 280715 012 34.5
+
 	fs.appendFile('smsDump.log', number + '::' + msg + '\r\n');
 	//Write and append data to a file
 	//this is just for safe keeping
@@ -84,7 +86,8 @@ function loadWells(wells){
 			if(rows > 0){
 				console.log("Completed Query");
 				wells = geoJson.parse(wells, {Point: ['lat', 'lng']});
-				saveWells('views/wellsGeoJson.json', wells);			}
+				//saveWells('views/wellsGeoJson.json', wells);			
+			}
 		}
 
 		);
