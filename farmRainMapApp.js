@@ -101,24 +101,6 @@ function saveWells(file, obj){
 	});
 }
 
-function parseSMSDump(){
-    
-	new lazy(fs.createReadStream('./smsDump.log'))
-    	.lines
-     	.forEach(function(line){
-     		//line --> SMA::PostalCode Date WellID Depth
-     		console.log(line.toString());
-     		var str = line.split("::")[1].split(" ").filter(Boolean);
-     		//str --> [PostalCode, Date, WellID, Depth]
-     		console.log(str.toString());
-     		if(str.length == 4) {
-     			console.log("str is length 4");
-     		}
-        	//console.log(line.toString());
-     }
- );
-}
-
 // function parseLatLong(row){
 // 		//console.log(myData);
 // 		var latitude = Number(row.LAT_DEGREE) + Number(row.LAT_MINUTE)/60 + Number(row.LAT_SECOND)/3600;
