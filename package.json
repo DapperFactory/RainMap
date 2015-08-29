@@ -18,10 +18,12 @@
   "homepage": "https://github.com/DapperFactory/RainMap",
   "dependencies": {
     "body-parser": "^1.13.3",
+    "cron": "^1.0.9",
     "express": "^4.12.3",
     "geojson": "^0.2.1",
     "google-maps": "^3.1.0",
     "jsonfile": "^2.2.1",
+    "lazy": "^1.0.11",
     "sqlite3": "^3.0.9"
   }
 }

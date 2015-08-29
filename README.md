@@ -14,7 +14,7 @@ working map view is found in views/google-maps.html
 
 Well data is stored in RAINAPP.db
 SCHEMA
-Well_Levels: (ID, TOT_WELL_DEPTH, T_STAMP)
+Well_History: (ID, TOT_WELL_DEPTH_m, T_STAMP)
 Well_Locations: (ID, LAT_DEGREE, LAT_MINUTE, LAT_SECOND, LAT_DECIMAL, LNG_DEGREE, LNG_MINUTE, LNG_SECOND, LNG_DECIMAL  ELEVATION_m) 
 LastReading: (ID, DATE)
 LastReading will be used to query latest reading from db. 

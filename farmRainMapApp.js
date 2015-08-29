@@ -3,7 +3,7 @@ var fs 		   = require('fs');
 var jsonfile   = require('jsonfile');
 var geoJson    = require('geojson');
 var bodyParser = require('body-parser');
-var lazy       = require('lazy');
+//var lazy       = require('lazy');
 
 //Initialize Database connections
 var db_file = "RAINAPP.db";      		//pass in databse files
@@ -68,7 +68,7 @@ app.post('/api/smsdump', function(req, res){
 //pass empty list to get filled by the query 
 function loadWells(wells){
 		//TODO: Change query to inner join that  includes well level 
-		var sqlQuery = "SELECT * FROM Well_Locations NATURAL JOIN Well_Levels"
+		var sqlQuery = "SELECT * FROM Well_Locations NATURAL JOIN (SELECT h.ID AS ID, h.TOT_WELL_DEPTH_m AS TOT_WELL_DEPTH_m, h.T_STAMP AS T_STAMP FROM Well_History as h JOIN LastReading as l on(h.ID = l.ID) WHERE h.T_STAMP = l.DATE) "
 		db.each(sqlQuery, function(err, row) {
 			//console.log(row);
 			if(err) console.log(err);
@@ -103,6 +103,32 @@ function saveWells(file, obj){
 		if(err) console.error(err);
 	});
 }
+
+// function smsParseUnitTest(){
+// 	new lazy(fs.createReadStream('./smsDump.log'))
+//         .lines
+//         .forEach(function(line){
+//             //line --> SMA::PostalCode Date WellID Depth
+//             console.log(line.toString());
+//             var str = line.split("::")[1].split(" ").filter(Boolean);
+        
+//             //str --> [PostalCode, Date, WellID, Depth]
+//             console.log(str.toString());
+//             if(str.length == 4) {
+//                 //Convert ddmmyy to YYYY-MM-DD
+//                 //var postalcode = str[0] //IGNORED
+//                 var date = str[1].replace(/(\d{2})(\d{2})(\d{2})/g, '20$3-$2-$1'); 
+//                 var wellID = str[2];
+//                 var depth = str[3];
+
+//                 //Loading values into db
+//                 var stmt = db.prepare("INSERT INTO Well_Levels VALUES (?,?,?)");
+//                 stmt.run(wellID, depth, date);
+//                 stmt.finalize();
+//             }
+//             //console.log(line.toString());
+//         }
+// }
 
 // function parseLatLong(row){
 // 		//console.log(myData);
