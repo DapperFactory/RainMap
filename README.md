@@ -34,5 +34,5 @@ Change icon colors of level is below a certain level?
 3)Modify Lat Long conversion to handle decimal in calculation in farmRainMapApp.js. The decimal is added to the conversiont at the sesconds level EX:
 Degree + Minutes/60 +  ('Seconds' + 'Decimal')/3600
 
-
+4) Add api endpoints for mobile and web client
  
