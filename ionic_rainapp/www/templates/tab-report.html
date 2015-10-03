@@ -1,0 +1,25 @@
+<ion-view view-title="Report">
+<ion-content>
+<!-- Postcode, Date, Well ID, WT Depth,  -->
+<form class="list list-inset simple-form">
+  <label class="item item-input">
+    <input ng-model="form.postcode" type="tel" placeholder="Postcode">
+  </label>
+  <label class="item item-input">
+    <input ng-model="form.date" type="date" placeholder="Date">
+  </label>
+  <label class="item item-input">
+    <input ng-model="form.well_id" type="tel" placeholder="Well ID">
+  </label>
+  <label class="item item-input">
+    <input ng-model="form.wt_depth" type="number" placeholder="WT Depth">
+  </label>
+</form>
+
+<div class="padding">
+  <button class="button button-block button-positive" ng-click="sendReport(form)">
+    Submit
+  </button>
+</div>
+</ion-content>
+</ion-view>

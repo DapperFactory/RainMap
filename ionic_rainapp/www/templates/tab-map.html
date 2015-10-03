@@ -1,0 +1,27 @@
+<ion-view view-title="Map">
+  <ion-content class="padding">
+  <div class="button-bar" id="panel">
+      <a class="button" ng-click="toggleHeatmap()">Heatmap</a>
+      <a class="button" ng-click="changeGradient()">Gradient</a>
+      <a class="button" ng-click="changeRadius()">Radius</a>
+      <a class="button" ng-click="changeOpacity()">Opacity</a>
+    </div>
+    <map id="map-canvas" center="24.57138, 74.21638" zoom="15" map-type-id="hybrid" disable-default-u-i="true">
+      <custom-control class= "button button-small" id="location" position="TOP_LEFT" index="1" ng-click="locate()" style="left:10px; top 10px;">
+      <icon class="ion-android-locate"></icon>
+    </custom-control>
+
+    </map>
+   
+    <div id="LegendKey"> 
+      <div id="LegendGradient"></div>
+      <div class="scale" id="0">O m</div>
+      <div class="scale" id="1" style="left: 15%;"></div>
+      <div class="scale" id="2" style="left: 32%;"></div>
+      <div class="scale" id="3" style="left: 48%;"></div>
+      <div class="scale" id="4" style="left: 64%;"></div>
+      <div class="scale" id="5" style="left: 80%;"></div>
+      <div class="scale" id="6" style="left: 95%;"></div>
+    </div>
+  </ion-content>
+</ion-view>
