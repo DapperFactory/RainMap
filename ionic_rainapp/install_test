@@ -1,8 +1,16 @@
-To Install and Test:
+#### INSTALL & TEST ####
 
 - Install Ionic View from App/Play Store (this is Alpha, so please be patient)
-- Log in using email: lewisdaly@cmu.edu, password: password
+- Log in using 
+	email: lewisdaly@cmu.edu
+	password: password
 - Install and run!
+
+
+#### UPDATE ####
+- open Ionic View
+- select ionic_rainapp
+- select 'sync to latest'
 
 #### NOTES ####
 - I will be pushing updates for testing using this - hopefully it works nicely, if not we will find another way (eg. testfairy)

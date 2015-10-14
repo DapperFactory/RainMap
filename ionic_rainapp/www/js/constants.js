@@ -1,3 +1,3 @@
 angular.module('rainapp-constants',[])  
-  .constant('apiUrl', 'http://lewis.kdoveton.com/ionic/mapdata/data.json')
-  .constant('debug', 'true');
+  .constant('apiUrl', 'http://202.158.216.65')
+  .constant('debug', '1');

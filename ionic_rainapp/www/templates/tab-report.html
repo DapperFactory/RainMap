@@ -12,7 +12,7 @@
     <input ng-model="form.well_id" type="tel" placeholder="Well ID">
   </label>
   <label class="item item-input">
-    <input ng-model="form.wt_depth" type="number" placeholder="WT Depth">
+    <input ng-model="form.wt_depth" type="number" placeholder="WT Depth" ng-pattern="/^[0-9]{1,7}(\.[0-9]+)?$/">
   </label>
 </form>
 

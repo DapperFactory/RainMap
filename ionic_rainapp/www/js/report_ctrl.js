@@ -30,8 +30,8 @@ angular.module('report.controllers', [])
     $http.post(url, {
       postcode:form['postcode'],
       date:form['date'],
-      well_id:form['well_id'],
-      wt_depth:form['wt_depth']
+      wellID:form['well_id'],
+      depth:form['wt_depth']
     })
     .then(function(response) {
      // Perform on request confirmation:
@@ -43,12 +43,8 @@ angular.module('report.controllers', [])
     //Error
     var alertPopup = $ionicPopup.alert({
       title: 'Error',
-      template: "Something went wrong... Try again later"
+      template: response.data.message
     });
   });
-
-
   }
-
-}
-})
+}})
