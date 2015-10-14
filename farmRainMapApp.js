@@ -64,6 +64,21 @@ app.post('/api/smsdump', function(req, res){
 
 });
 
+//Recieve Post request from app:
+app.post('/api/report', function(req, res){
+
+	var postcode = req.body.postcode;
+	var date = req.body.date;
+	var wellID = req.body.wellID;
+	var depth = req.body.depth;
+	console.log("Report recieved: " + postcode + "," + date + ',' + wellID + ',' + 'depth');
+	res.send("Report Success");
+
+	//TODO: Where do we add this to the DB? or do we just append the log file?
+
+});
+
+
 
 //pass empty list to get filled by the query 
 function loadWells(wells){
