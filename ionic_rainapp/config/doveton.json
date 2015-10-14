@@ -1,3 +1,5 @@
 {
-  "apiUrl":"http://lewis.kdoveton.com/ionic/mapdata/data.json"
+  "apiUrl":"http://lewis.kdoveton.com/ionic/mapdata/data.json",
+  "debug":"true"
+
 }

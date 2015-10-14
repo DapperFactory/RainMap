@@ -1,5 +1,7 @@
 Commands:
 
 Change Urls (and other env. variables):
+can be: dev, doveton, localdev
 
-"gulp replace --localdev"
+eg.
+"gulp replace --env localdev"
