@@ -64,20 +64,35 @@ app.post('/api/smsdump', function(req, res){
 
 });
 
+
+app.get('/api/wells', function(req, res){
+	res.json(wells);
+});
+
+
 //Recieve Post request from app:
 app.post('/api/report', function(req, res){
 
+	var number = 12345; //just a dummy number
 	var postcode = req.body.postcode;
-	var date = req.body.date;
+	var date = req.body.date; //TODO: format/strip date
 	var wellID = req.body.wellID;
-	var depth = req.body.depth;
-	console.log("Report recieved: " + postcode + "," + date + ',' + wellID + ',' + 'depth');
-	res.send("Report Success");
+	var depth = parseFloat(req.body.depth);
 
-	//TODO: Where do we add this to the DB? or do we just append the log file?
+	var msg = postcode + " " + date + " " + wellID + " " + depth;
+	
+	//message has format: postcode date wellid depth
+	if ((postcode != null) && (date != null) && (wellID != null) && (depth != null) && (isNaN(depth)) != true) {
+		res.send("Submitted=True" + " Message="+msg);
 
+		//We will dump to appDump.log - keeping the same format as the other file. the number is just a dummy number
+		//but could be useful later on.
+		fs.appendFile('appDump.log', number + '::' + msg + '\r\n');
+	} else {
+		res.status(500)
+		.send({ 'message': 'There was an error with your data. Please check your fields and try again.' });
+	}
 });
-
 
 
 //pass empty list to get filled by the query 
@@ -108,8 +123,8 @@ function loadWells(wells){
 
 		);
 
-		
-		
+
+
 
 }
 
@@ -126,7 +141,7 @@ function saveWells(file, obj){
 //             //line --> SMA::PostalCode Date WellID Depth
 //             console.log(line.toString());
 //             var str = line.split("::")[1].split(" ").filter(Boolean);
-        
+
 //             //str --> [PostalCode, Date, WellID, Depth]
 //             console.log(str.toString());
 //             if(str.length == 4) {
