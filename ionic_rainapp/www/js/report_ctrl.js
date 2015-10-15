@@ -9,12 +9,13 @@ angular.module('report.controllers', [])
   //$scope.$on('$ionicView.enter', function(e) {
   //});
 
-$scope.form = {};
+  $scope.form = {};
+  $scope.form.date =  new Date();
 
-// Validate and submit form
-$scope.sendReport = function(form){
+  // Validate and submit form
+  $scope.sendReport = function(form){
 	// TODO: Validate fields
-  if ((form['postcode'] == null) || (form['date'] == null) || (form['well_id']) == null || (form['wt_depth'] == null))
+  if (($scope.form.postcode == null) || ($scope.form.postcode == null) || ($scope.form.postcode== null) || ($scope.form.postcode == null))
   {
     console.log("Fill out the form!");
     var alertPopup = $ionicPopup.alert({
@@ -25,12 +26,12 @@ $scope.sendReport = function(form){
   else
   {
     //Send POST Request
-    var url = apiUrl + '/api/update'
+    var url = apiUrl + '/api/report'
     $http.post(url, {
       postcode:form['postcode'],
       date:form['date'],
-      well_id:form['well_id'],
-      wt_depth:form['wt_depth']
+      wellID:form['well_id'],
+      depth:form['wt_depth']
     })
     .then(function(response) {
      // Perform on request confirmation:
@@ -42,12 +43,8 @@ $scope.sendReport = function(form){
     //Error
     var alertPopup = $ionicPopup.alert({
       title: 'Error',
-      template: "Something went wrong... Try again later"
+      template: response.data.message
     });
   });
-
-
   }
-
-}
-})
+}})

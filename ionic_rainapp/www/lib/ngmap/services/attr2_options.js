@@ -26,13 +26,13 @@
     } catch(e) { // if not parsable, change little
       return str
         // wrap keys without quote with valid double quote
-        .replace(/([\$\w]+)\s*:/g, function(_, $1){return '"'+$1+'":'})
+        .replace(/([\$\w]+)\s*:/g, function(_, $1){return '"'+$1+'":';})
         // replacing single quote wrapped ones to double quote 
-        .replace(/'([^']+)'/g, function(_, $1){return '"'+$1+'"'})
+        .replace(/'([^']+)'/g, function(_, $1){return '"'+$1+'"';});
     }
   }
 
-  var Attr2Options = function($parse, $timeout, NavigatorGeolocation, GeoCoder) { 
+  var Attr2Options = function($parse, $timeout, $log, NavigatorGeolocation, GeoCoder) { 
 
     /**
      * Returns the attributes of an element as hash
@@ -78,7 +78,7 @@
           }
           else if (output === Object(output)) { // JSON is an object (not array or null)
             // check for nested hashes and convert to Google API options
-            output = getOptions(output, options);
+            output = getOptions(output, options, true);
           }
         } catch(err2) {
           // 3. Object Expression. i.e. LatLng(80,-49)
@@ -122,20 +122,50 @@
           }
         } // catch(err2)
       } // catch(err)
+
+      // convert output more for shape bounds
+      if (options.key == 'bounds' && output instanceof Array) {
+        output = new google.maps.LatLngBounds(output[0], output[1]);
+      }
+
+      // convert output more for shape icons
+      if (options.key == 'icons' && output instanceof Array) {
+        for (var i=0; i<output.length; i++) {
+          var el = output[i];
+          if (el.icon.path.match(/^[A-Z_]+$/)) {
+            el.icon.path =  google.maps.SymbolPath[el.icon.path];
+          }
+        }
+      }
+
+      // convert output more for marker icon
+      if (options.key == 'icon' && output instanceof Object) {
+        if ((""+output.path).match(/^[A-Z_]+$/)) {
+          output.path = google.maps.SymbolPath[output.path];
+        }
+        for (var key in output) { //jshint ignore:line
+          var arr = output[key];
+          if (key == "anchor" || key == "origin") {
+            output[key] = new google.maps.Point(arr[0], arr[1]);
+          } else if (key == "size" || key == "scaledSize") {
+            output[key] = new google.maps.Size(arr[0], arr[1]);
+          }
+        }
+      }
+
       return output;
     };
 
     var getAttrsToObserve = function(attrs) {
       var attrsToObserve = [];
       if (attrs["ng-repeat"] || attrs.ngRepeat) {  // if element is created by ng-repeat, don't observe any
-        void(0);
-      } else {
-        for (var attrName in attrs) {
-          var attrValue = attrs[attrName];
-          if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
-            console.log('setting attribute to observe', attrName, camelCase(attrName), attrValue);
-            attrsToObserve.push(camelCase(attrName));
-          }
+        //$log.warn("It is NOT ideal to have many observers or watcher with ng-repeat. Please use it with your own risk");
+      }
+      for (var attrName in attrs) { //jshint ignore:line
+        var attrValue = attrs[attrName];
+        if (attrValue && attrValue.match(/\{\{.*\}\}/)) { // if attr value is {{..}}
+          console.log('setting attribute to observe', attrName, camelCase(attrName), attrValue);
+          attrsToObserve.push(camelCase(attrName));
         }
       }
       return attrsToObserve;
@@ -174,7 +204,7 @@
      * @param {scope} scope angularjs scope
      * @returns {Hash} options converted attributess
      */
-    var getOptions = function(attrs, scope) {
+    var getOptions = function(attrs, scope, doNotConverStringToNumber) {
       var options = {};
       for(var key in attrs) {
         if (attrs[key]) {
@@ -187,7 +217,11 @@
             if (typeof attrs[key] !== 'string') {
               options[key] = attrs[key];
             } else {
-              options[key] = toOptionValue(attrs[key], {scope:scope, key: key});
+              if (doNotConverStringToNumber && attrs[key].match(/^[0-9]+$/)) {
+                options[key] = attrs[key];
+              } else {
+                options[key] = toOptionValue(attrs[key], {scope:scope, key: key});
+              }
             }
           }
         } // if (attrs[key])
@@ -284,8 +318,8 @@
                       return str;
                     }
                   });
-                } 
-                
+                }
+
                 if (key === "style") {
                   var str = attr.charAt(0).toUpperCase() + attr.slice(1);
                   var objName = str.replace(/Options$/,'')+"Style";
@@ -318,8 +352,8 @@
       orgAttributes: orgAttributes
     }; // return
 
-  }; 
-  Attr2Options.$inject= ['$parse', '$timeout', 'NavigatorGeolocation', 'GeoCoder'];
+  };
+  Attr2Options.$inject= ['$parse', '$timeout', '$log', 'NavigatorGeolocation', 'GeoCoder'];
 
   angular.module('ngMap').service('Attr2Options', Attr2Options);
 })();

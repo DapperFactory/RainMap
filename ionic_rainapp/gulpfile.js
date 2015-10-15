@@ -58,7 +58,8 @@ var fs      = require('fs');
 
 gulp.task('replace', function () {  
   // Get the environment from the command line
-  var env = args.env || 'localdev';
+  console.log(args.env);
+  var env = args.env;
 
   // Read the settings from the right file
   var filename = env + '.json';
@@ -71,6 +72,10 @@ gulp.src('config/constants.js')
       {
         match: 'apiUrl',
         replacement: settings.apiUrl
+      },
+      {
+        match: 'debug',
+        replacement: settings.debug
       }
     ]
   }))

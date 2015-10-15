@@ -13,7 +13,7 @@ angular.module('map.controllers', [])
     $scope.map = map;
 
     //Load the map data:
-    var well_data = httpGet(apiUrl);
+    var well_data = httpGet(apiUrl+'/api/wells');
     var wellGeoJson = JSON.parse(well_data);
 
     wellGeoJson = GeoJSON.parse(wellGeoJson, {Point: ['lat', 'lng']});
@@ -22,7 +22,7 @@ angular.module('map.controllers', [])
 
     //Create Info window pop up to display Well Id and water level
     //Might want to change this to onClick -- mouseover get annoying
-    map.data.addListener('mouseover', function(event) {
+    map.data.addListener('click', function(event) {
       infoWindow.setContent('<div style="line-height:1.35;overflow:hidden;white-space:nowrap;"> Well ID = '+
         event.feature.getProperty('Id') +"<br/>Water Level: " + event.feature.getProperty("Level")  + "m");
       var anchor = new google.maps.MVCObject();

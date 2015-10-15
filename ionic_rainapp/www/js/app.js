@@ -5,25 +5,25 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'ngMap', 'starter.controllers', 'map.controllers', 'report.controllers', 'starter.services', 'rainapp-constants'])
+angular.module('starter', ['ionic', 'ngMap', 'starter.controllers', 'map.controllers', 'report.controllers', 'starter.services', 'rainapp-constants', 'ngIOS9UIWebViewPatch'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
-    if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-      cordova.plugins.Keyboard.disableScroll(true);
+  if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
+    cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+    cordova.plugins.Keyboard.disableScroll(true);
 
-    }
-    if (window.StatusBar) {
+  }
+  if (window.StatusBar) {
       // org.apache.cordova.statusbar required
-      StatusBar.styleLightContent();
+      // StatusBar.styleDarkContent();
     }
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider, $provide, debug) {
 
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
@@ -32,7 +32,7 @@ angular.module('starter', ['ionic', 'ngMap', 'starter.controllers', 'map.control
   $stateProvider
 
   // setup an abstract state for the tabs directive
-    .state('tab', {
+  .state('tab', {
     url: '/tab',
     abstract: true,
     templateUrl: 'templates/tabs.html'
@@ -51,23 +51,23 @@ angular.module('starter', ['ionic', 'ngMap', 'starter.controllers', 'map.control
   })
 
   .state('tab.report', {
-      url: '/report',
-      views: {
-        'tab-report': {
-          templateUrl: 'templates/tab-report.html',
-          controller: 'ReportCtrl'
-        }
+    url: '/report',
+    views: {
+      'tab-report': {
+        templateUrl: 'templates/tab-report.html',
+        controller: 'ReportCtrl'
       }
-    })
-    .state('tab.chat-detail', {
-      url: '/chats/:chatId',
-      views: {
-        'tab-chats': {
-          templateUrl: 'templates/chat-detail.html',
-          controller: 'ChatDetailCtrl'
-        }
+    }
+  })
+  .state('tab.chat-detail', {
+    url: '/chats/:chatId',
+    views: {
+      'tab-chats': {
+        templateUrl: 'templates/chat-detail.html',
+        controller: 'ChatDetailCtrl'
       }
-    })
+    }
+  })
 
   .state('tab.settings', {
     url: '/settings',
@@ -82,7 +82,59 @@ angular.module('starter', ['ionic', 'ngMap', 'starter.controllers', 'map.control
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/map');
 
+  // catch exceptions in angular - http://forum.ionicframework.com/t/error-tracking-in-angular/8641
+  $provide.decorator('$exceptionHandler', ['$delegate', function($delegate){
+    return function(exception, cause){
+      $delegate(exception, cause);
+
+      var data = {
+        type: 'angular',
+        url: window.location.hash,
+        localtime: Date.now()
+      };
+      if(cause)               { data.cause    = cause;              }
+      if(exception){
+        if(exception.message) { data.message  = exception.message;  }
+        if(exception.name)    { data.name     = exception.name;     }
+        if(exception.stack)   { data.stack    = exception.stack;    }
+      }
+
+    if(debug){
+        console.log('exception', data);
+        window.alert('Error: '+data.message);
+      } else {
+        track('exception', data);
+      }
+    };
+  }]);
+
+  // catch exceptions out of angular
+  window.onerror = function(message, url, line, col, error){
+    var stopPropagation = debug ? false : true;
+    var data = {
+      type: 'javascript',
+      url: window.location.hash,
+      localtime: Date.now()
+    };
+    if(message)       { data.message      = message;      }
+    if(url)           { data.fileName     = url;          }
+    if(line)          { data.lineNumber   = line;         }
+    if(col)           { data.columnNumber = col;          }
+    if(error){
+      if(error.name)  { data.name         = error.name;   }
+      if(error.stack) { data.stack        = error.stack;  }
+    }
+
+    if(debug){
+      console.log('exception', data);
+      window.alert('Error: '+data.message);
+    } else {
+      track('exception', data);
+    }
+    return stopPropagation;
+  };
+
 })
 .service('backendService', function($http, apiUrl){
       //Use the apiUrl variable to make API calls
-  });
+    });
