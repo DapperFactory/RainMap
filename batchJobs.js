@@ -76,10 +76,11 @@ function unitTest(){
             //console.log(message.toString());
             if(message.length == 4) {
                 //Convert ddmmyy to YYYY-MM-DD
-                var date = message[1].replace(/(\d{2})(\d{2})(\d{2})/g, '20$3-$2-$1'); 
-                var wellID = Number(message[2]);
-                var depth = Number(message[3]);
-                var item = [wellID, depth, date];
+                var timeStamp = message[1].replace(/(\d{2})(\d{2})(\d{2})/g, '20$3-$2-$1'); 
+                var ID = Number(message[2]);
+                var level = Number(message[3]);
+                //var item = {wellID:ID, depth: level, date:timeStamp};
+                var item =[ID, level, timeStamp];
                 rawList.push(item);
                 console.log(item);
             }
@@ -99,21 +100,49 @@ unitTest();
 
 
 function createUniqueList(rawList){
-    for(var i = rawList.length-1; i> -1; i--){
-        
-        console.log(rawList[i].toString());
-        
-        var insert = rawList[i][0];
-        for(var j = 0; j < uniqueList.length; j++){
-            if(insert == uniqueList[0])
-        }
-        if(!(insert in uniqueList)){
+    //Loop through rawList in reverse: we want the last occurnace of each well inputs
+    for(var i = rawList.length-1 ; i > -1; i--){
+        console.log("Checking item: " + rawList[i][0]);
+        checkId = rawList[i][0];
+        var result = in_array(uniqueList, checkId);
+        if(result==false){
             uniqueList.push(rawList[i]);
+            console.log("Item inserted");
+        }else{
+           
+            console.log("Item exist");
+            
         }
     }
-    printInsertDB(uniqueList);
+
+
+
+    // for(var i = rawList.length-1; i> -1; i--){
+        
+    //     console.log(rawList[i].toString());
+        
+    //     var insert = rawList[i][0];
+    //     for(var j = 0; j < uniqueList.length; j++){
+    //         if(insert == uniqueList[0])
+    //     }
+    //     if(!(insert in uniqueList)){
+    //         uniqueList.push(rawList[i]);
+    //     }
+    // }
+    //printInsertDB(uniqueList);
 }
 
+function in_array(array, id) {
+    for ( var i = 0; i < array.length; i ++){
+        //return the index of where it exists in the list
+        console.log("Comparing:" + array[i][0] + "to" +id);
+        if( array[i][0] ===id){
+            return true;
+        }else{
+            return false;
+        }
+    }    
+}
 function arrayLastUnique() {
     for(var i = this.length; i > -1; i--){
         var c = this[i].wellID;
